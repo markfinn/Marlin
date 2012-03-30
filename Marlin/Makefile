@@ -35,22 +35,22 @@
 # $Id$
 
 #For "old" Arduino Mega
-MCU = atmega1280
+#MCU = atmega1280
 #For Arduino Mega2560
-#MCU = atmega2560
+MCU = atmega2560
 #For Sanguinololu
 #MCU = atmega644p 
 
 #Arduino install directory
-INSTALL_DIR = ../../arduino-0022/
+INSTALL_DIR = ../../arduino-0022
 
 # Be sure to regenerate speed_lookuptable.h with create_speed_lookuptable.py
 # if you are setting this to something other than 16MHz
 F_CPU = 16000000
 
 UPLOAD_RATE = 115200
-AVRDUDE_PROGRAMMER = arduino
-PORT = /dev/arduino
+AVRDUDE_PROGRAMMER = stk500v2
+PORT = /dev/ttyACM0
 
 TARGET = $(notdir $(CURDIR))
 
