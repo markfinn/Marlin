@@ -56,6 +56,14 @@ int current_raw_bed = 0;
   #ifdef PID_ADD_EXTRUSION_RATE
     float Kc=DEFAULT_Kc;
   #endif
+  #ifdef PIDESTIMATEMODEL
+    float Kpower=DEFAULT_Kpower;
+    float Kloss=DEFAULT_Kloss;
+    float Ktread=DEFAULT_Ktread;
+    float Ktheat=DEFAULT_Ktheat;
+    float Ktupdate=DEFAULT_Ktupdate;
+    float AmbientTemp=DEFAULT_AmbientTemp;
+  #endif
 #endif //PIDTEMP
   
   
@@ -67,21 +75,6 @@ static volatile bool temp_meas_ready = false;
 static unsigned long  previous_millis_bed_heater;
 //static unsigned long previous_millis_heater;
 
-#ifdef PIDTEMP
-  //static cannot be external:
-  static float temp_iState[EXTRUDERS] = { 0 };
-  static float temp_dState[EXTRUDERS] = { 0 };
-  static float pTerm[EXTRUDERS];
-  static float iTerm[EXTRUDERS];
-  static float dTerm[EXTRUDERS];
-  //int output;
-  static float pid_error[EXTRUDERS];
-  static float temp_iState_min[EXTRUDERS];
-  static float temp_iState_max[EXTRUDERS];
-  // static float pid_input[EXTRUDERS];
-  // static float pid_output[EXTRUDERS];
-  static bool pid_reset[EXTRUDERS];
-#endif //PIDTEMP
   static unsigned char soft_pwm[EXTRUDERS];
   
 #ifdef WATCHPERIOD
@@ -133,6 +126,8 @@ static unsigned long  previous_millis_bed_heater;
 //=============================   functions      ============================
 //===========================================================================
 
+#ifdef PIDTEMP
+
 void PID_autotune(float temp)
 {
   float input;
@@ -151,8 +146,18 @@ void PID_autotune(float temp)
   float Ku, Tu;
   float Kp, Ki, Kd;
   float max, min;
+  #ifdef PIDESTIMATEMODEL
+    float dTempEstimate;
+    static float lastOutput=0;
+    static float lastTemp;
+    static float modelCoreTemp;
+    float coreTempEstimate;
+    #endif
   
   SERIAL_ECHOLN("PID Autotune start");
+
+  while (temp_meas_ready != true);
+  lastTemp = modelCoreTemp = analog2temp(current_raw[0], 0);
 
   for(;;) {
 
@@ -161,6 +166,14 @@ void PID_autotune(float temp)
       temp_meas_ready = false;
       CRITICAL_SECTION_END;
       input = analog2temp(current_raw[0], 0);
+
+      #ifdef PIDESTIMATEMODEL
+        dTempEstimate = Kpower * lastOutput - Kloss * (modelCoreTemp - AmbientTemp);
+        coreTempEstimate = (input - (1.0-Ktread)*lastTemp)/Ktread;
+        lastTemp = input;
+        modelCoreTemp = (modelCoreTemp + dTempEstimate)*(1.0-Ktupdate) + coreTempEstimate*Ktupdate;
+        input = modelCoreTemp;
+      #endif
       
       max=max(max,input);
       min=min(min,input);
@@ -168,6 +181,7 @@ void PID_autotune(float temp)
         if(millis() - t2 > 5000) { 
           heating=false;
           soft_pwm[0] = (bias - d) >> 1;
+          lastOutput = bias - d;
           t1=millis();
           t_high=t1 - t2;
           max=temp;
@@ -217,6 +231,7 @@ void PID_autotune(float temp)
             }
           }
           soft_pwm[0] = (bias + d) >> 1;
+          lastOutput = bias + d;
           cycles++;
           min=temp;
         }
@@ -237,27 +252,83 @@ void PID_autotune(float temp)
   }
 }
 
-void updatePID()
+float PIDUpdate(float tempError, float dTempEstimate, int extruder)
 {
-#ifdef PIDTEMP
-  for(int e = 0; e < EXTRUDERS; e++) { 
-     temp_iState_max[e] = PID_INTEGRAL_DRIVE_MAX / Ki;  
-  }
+  float output;
+  static float iState[EXTRUDERS] = { 0 };
+
+/*        if(tempError > 10) {
+        iState[extruder] = 0.0;
+        #ifdef PID_DEBUG
+          SERIAL_ECHO_START;
+          SERIAL_ECHOPGM(" PIDDEBUG ");
+          SERIAL_ECHO(extruder);
+          SERIAL_ECHOLNPGM(": too low reset");
+        #endif //PID_DEBUG
+        return PID_MAX;
+      }
+      else if(tempError < -10) {
+        iState[extruder] = 0.0;
+        #ifdef PID_DEBUG
+          SERIAL_ECHO_START;
+          SERIAL_ECHOPGM(" PIDDEBUG ");
+          SERIAL_ECHO(extruder);
+          SERIAL_ECHOLNPGM(": too high reset");
+        #endif //PID_DEBUG
+        return 0;
+      }
+*/
+  iState[extruder] += Ki * tempError;
+  iState[extruder] = constrain(iState[extruder], 0, PID_INTEGRAL_DRIVE_MAX);
+
+  output = constrain(Kp * tempError + iState[extruder] - Kd * dTempEstimate, 0, PID_MAX);
+
+  #ifdef PID_DEBUG
+    SERIAL_ECHO_START;
+    SERIAL_ECHOPGM(" PIDDEBUG ");
+    SERIAL_ECHO(extruder);
+    SERIAL_ECHOPGM(": Terr ");
+    SERIAL_ECHO(tempError);
+    SERIAL_ECHOPGM(" dTEst ");
+    SERIAL_ECHO(dTempEstimate);
+    SERIAL_ECHOPGM(" output ");
+    SERIAL_ECHO(output);
+    SERIAL_ECHOPGM(" pTerm ");
+    SERIAL_ECHO(Kp * tempError);
+    SERIAL_ECHOPGM(" iTerm ");
+    SERIAL_ECHO(iState[extruder]);
+    SERIAL_ECHOPGM(" dTerm ");
+    SERIAL_ECHOLN(Kd * dTempEstimate);
+  #endif //PID_DEBUG
+
+
+  return output;
+
+
+
+
+}
 #endif
-}
-  
-int getHeaterPower(int heater) {
-  return soft_pwm[heater];
-}
 
 void manage_heater()
 {
+  float pid_output;
+  float tempReading;
+  #ifdef PIDTEMP
+  static float lastTemp[EXTRUDERS] = { 0 };
+  float dTempEstimate;
+   #ifdef PIDESTIMATEMODEL
+    static float lastOutput[EXTRUDERS] = { 0 };
+    static float modelCoreTemp[EXTRUDERS] = { 0 };
+    static float modelReadTemp[EXTRUDERS] = { 0 };
+    float coreTempEstimate;
+    #endif
+  #endif
+
   #ifdef USE_WATCHDOG
     wd_reset();
   #endif
   
-  float pid_input;
-  float pid_output;
 
   if(temp_meas_ready != true)   //better readability
     return; 
@@ -269,43 +340,51 @@ void manage_heater()
   for(int e = 0; e < EXTRUDERS; e++) 
   {
 
-  #ifdef PIDTEMP
-    pid_input = analog2temp(current_raw[e], e);
+  #ifndef PID_OPENLOOP
+    tempReading = analog2temp(current_raw[e], e);
 
-    #ifndef PID_OPENLOOP
-        pid_error[e] = pid_setpoint[e] - pid_input;
-        if(pid_error[e] > 10) {
-          pid_output = PID_MAX;
-          pid_reset[e] = true;
-        }
-        else if(pid_error[e] < -10) {
-          pid_output = 0;
-          pid_reset[e] = true;
-        }
-        else {
-          if(pid_reset[e] == true) {
-            temp_iState[e] = 0.0;
-            pid_reset[e] = false;
-          }
-          pTerm[e] = Kp * pid_error[e];
-          temp_iState[e] += pid_error[e];
-          temp_iState[e] = constrain(temp_iState[e], temp_iState_min[e], temp_iState_max[e]);
-          iTerm[e] = Ki * temp_iState[e];
-          //K1 defined in Configuration.h in the PID settings
-          #define K2 (1.0-K1)
-          dTerm[e] = (Kd * (pid_input - temp_dState[e]))*K2 + (K1 * dTerm[e]);
-          temp_dState[e] = pid_input;
-          pid_output = constrain(pTerm[e] + iTerm[e] - dTerm[e], 0, PID_MAX);
-        }
-    #endif //PID_OPENLOOP
-    #ifdef PID_DEBUG
-    SERIAL_ECHOLN(" PIDDEBUG "<<e<<": Input "<<pid_input<<" Output "<<pid_output" pTerm "<<pTerm[e]<<" iTerm "<<iTerm[e]<<" dTerm "<<dTerm[e]);  
-    #endif //PID_DEBUG
-  #else /* PID off */
-    pid_output = 0;
-    if(current_raw[e] < target_raw[e]) {
-      pid_output = PID_MAX;
-    }
+    #ifdef PIDTEMP
+
+      #ifndef PIDESTIMATEMODEL
+        dTempEstimate = tempReading - lastTemp[e];
+        lastTemp[e] = tempReading;
+        pid_output = PIDUpdate(pid_setpoint[e] - tempReading, dTempEstimate, e);
+      #else /* PIDESTIMATEMODEL on */
+        dTempEstimate = Kpower * lastOutput[e] - Kloss * (modelCoreTemp[e] - AmbientTemp);
+        coreTempEstimate = (tempReading - (1.0-Ktread)*lastTemp[e])/Ktread;
+        lastTemp[e] = tempReading;
+        modelCoreTemp[e] = modelCoreTemp[e] + dTempEstimate;
+        modelReadTemp[e] = modelReadTemp[e] * (1.0-Ktread) + modelCoreTemp[e] * Ktread;
+        modelCoreTemp[e] = modelCoreTemp[e]*(1.0-Ktupdate) + ((coreTempEstimate+(tempReading - modelReadTemp[e] + modelCoreTemp[e]))/2.0)*Ktupdate;
+        pid_output = (1.0-Ktheat) * lastOutput[e] + Ktheat * PIDUpdate(pid_setpoint[e] - modelCoreTemp[e], dTempEstimate, e);
+        lastOutput[e] = pid_output;
+
+        #ifdef PID_DEBUG
+          SERIAL_ECHO_START;
+          SERIAL_ECHOPGM(" PIDDEBUGMODEL ");
+          SERIAL_ECHO(e);
+          SERIAL_ECHOPGM(": T ");
+          SERIAL_ECHO(tempReading);
+          SERIAL_ECHOPGM(" dTEst ");
+          SERIAL_ECHO(dTempEstimate);
+          SERIAL_ECHOPGM(" cTEst ");
+          SERIAL_ECHO(coreTempEstimate);
+          SERIAL_ECHOPGM(" cT ");
+          SERIAL_ECHO(modelCoreTemp[e]);
+          SERIAL_ECHOPGM(" out ");
+          SERIAL_ECHOLN(pid_output);
+        #endif //PID_DEBUG
+
+      #endif
+
+    #else /* PID off */
+      pid_output = 0;
+      if(current_raw[e] < target_raw[e]) {
+        pid_output = PID_MAX;
+      }
+    #endif
+  #else //PID_OPENLOOP
+    pid_output = pid_setpoint[e];
   #endif
 
     // Check if temperature is within the correct range
@@ -373,6 +452,13 @@ void manage_heater()
     #endif
   #endif
 }
+
+
+int getHeaterPower(int heater) {
+  return soft_pwm[heater];
+}
+
+
 
 #define PGM_RD_W(x)   (short)pgm_read_word(&x)
 // Takes hot end temperature value as input and returns corresponding raw value. 
@@ -539,10 +625,6 @@ void tp_init()
     watch_raw[e] = watch_raw[0];
 #endif
     maxttemp[e] = maxttemp[0];
-#ifdef PIDTEMP
-    temp_iState_min[e] = 0.0;
-    temp_iState_max[e] = PID_INTEGRAL_DRIVE_MAX / Ki;
-#endif //PIDTEMP
   }
 
   #if (HEATER_0_PIN > -1) 

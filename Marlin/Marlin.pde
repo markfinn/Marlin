@@ -915,9 +915,7 @@ void process_commands()
         #ifdef TEMP_RESIDENCY_TIME
             /* start/restart the TEMP_RESIDENCY_TIME timer whenever we reach target temp for the first time
               or when current temp falls outside the hysteresis after target temp was reached */
-          if ((residencyStart == -1 &&  target_direction && !isHeatingHotend(tmp_extruder)) ||
-              (residencyStart == -1 && !target_direction && !isCoolingHotend(tmp_extruder)) ||
-              (residencyStart > -1 && labs(degHotend(tmp_extruder) - degTargetHotend(tmp_extruder)) > TEMP_HYSTERESIS) ) 
+          if (labs(degHotend(tmp_extruder) - degTargetHotend(tmp_extruder)) > TEMP_HYSTERESIS)
           {
             residencyStart = millis();
           }
@@ -1154,22 +1152,43 @@ void process_commands()
     case 301: // M301
       {
         if(code_seen('P')) Kp = code_value();
-        if(code_seen('I')) Ki = code_value()*PID_dT;
-        if(code_seen('D')) Kd = code_value()/PID_dT;
+        if(code_seen('I')) Ki = code_value();
+        if(code_seen('D')) Kd = code_value();
         #ifdef PID_ADD_EXTRUSION_RATE
         if(code_seen('C')) Kc = code_value();
         #endif
-        updatePID();
+	#ifdef PIDESTIMATEMODEL
+        if(code_seen('G')) Kpower = code_value();
+        if(code_seen('L')) Kloss = code_value();
+        if(code_seen('R')) Ktread = code_value();
+        if(code_seen('T')) Ktheat = code_value();
+        if(code_seen('U')) Ktupdate = code_value();
+        if(code_seen('A')) AmbientTemp = code_value();
+        #endif
         SERIAL_PROTOCOL(MSG_OK);
 		SERIAL_PROTOCOL(" p:");
         SERIAL_PROTOCOL(Kp);
         SERIAL_PROTOCOL(" i:");
-        SERIAL_PROTOCOL(Ki/PID_dT);
+        SERIAL_PROTOCOL(Ki);
         SERIAL_PROTOCOL(" d:");
-        SERIAL_PROTOCOL(Kd*PID_dT);
+        SERIAL_PROTOCOL(Kd);
         #ifdef PID_ADD_EXTRUSION_RATE
         SERIAL_PROTOCOL(" c:");
-        SERIAL_PROTOCOL(Kc*PID_dT);
+        SERIAL_PROTOCOL(Kc);
+        #endif
+	#ifdef PIDESTIMATEMODEL
+        SERIAL_PROTOCOL(" g:");
+        SERIAL_PROTOCOL(Kpower);
+        SERIAL_PROTOCOL(" l:");
+        SERIAL_PROTOCOL(Kloss);
+        SERIAL_PROTOCOL(" r:");
+        SERIAL_PROTOCOL(Ktread);
+        SERIAL_PROTOCOL(" t:");
+        SERIAL_PROTOCOL(Ktheat);
+        SERIAL_PROTOCOL(" u:");
+        SERIAL_PROTOCOL(Ktupdate);
+        SERIAL_PROTOCOL(" a:");
+        SERIAL_PROTOCOL(AmbientTemp);
         #endif
         SERIAL_PROTOCOLLN("");
       }

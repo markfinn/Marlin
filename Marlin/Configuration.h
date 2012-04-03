@@ -53,7 +53,7 @@
 #define TEMP_SENSOR_BED 1
 
 // Actual temperature must be close to target for this long before M109 returns success
-#define TEMP_RESIDENCY_TIME 10	// (seconds)
+#define TEMP_RESIDENCY_TIME 15	// (seconds)
 #define TEMP_HYSTERESIS 3       // (degC) range of +/- temperatures considered "close" to the target one
 
 // The minimal temperature defines the temperature below which the heater will not be enabled It is used
@@ -81,7 +81,6 @@
   //#define PID_DEBUG // Sends debug data to the serial port. 
   //#define PID_OPENLOOP 1 // Puts PID in open loop. M104 sets the output power in %
   #define PID_INTEGRAL_DRIVE_MAX 255  //limit for the integral term
-  #define K1 0.95 //smoothing factor withing the PID
   #define PID_dT ((16.0 * 8.0)/(F_CPU / 64.0 / 256.0)) //sampling period of the
 
 // If you are using a preconfigured hotend then you can use one of the value sets by uncommenting it
@@ -90,10 +89,29 @@
 //    #define  DEFAULT_Ki (1.08*PID_dT)  
 //    #define  DEFAULT_Kd (114/PID_dT)  
 
-// Makergear
-    #define  DEFAULT_Kp 7.0
-    #define  DEFAULT_Ki 0.1  
-    #define  DEFAULT_Kd 12  
+// Makergear - mark from spreadsheet
+//    #define  DEFAULT_Kp 18.0
+//    #define  DEFAULT_Ki .006 
+//    #define  DEFAULT_Kd 12.0  
+
+
+
+   #define PIDESTIMATEMODEL
+
+    #define  DEFAULT_Kpower 0.000975
+    #define  DEFAULT_Kloss 0.000455
+    #define  DEFAULT_Ktread .0085
+
+    #define  DEFAULT_Ktheat .25
+    #define  DEFAULT_Ktupdate .05
+
+    #define  DEFAULT_AmbientTemp 25
+
+    #define  DEFAULT_Kp 100
+    #define  DEFAULT_Ki 0.4
+    #define  DEFAULT_Kd 1000.0
+
+
 
 // Mendel Parts V9 on 12V    
 //    #define  DEFAULT_Kp  63.0

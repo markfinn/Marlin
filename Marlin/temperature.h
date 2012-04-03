@@ -46,7 +46,13 @@ extern int current_raw_bed;
   extern int target_bed_low_temp ;  
   extern int target_bed_high_temp ;
 #endif
-extern float Kp,Ki,Kd,Kc;
+extern float Kp,Ki,Kd;
+#ifdef PID_ADD_EXTRUSION_RATE
+extern float Kc;
+#endif
+#ifdef PIDESTIMATEMODEL
+extern float Kpower, Kloss, Ktread, Ktheat, Ktupdate, AmbientTemp;
+#endif
 
 #ifdef PIDTEMP
   extern float pid_setpoint[EXTRUDERS];
