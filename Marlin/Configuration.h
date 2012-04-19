@@ -93,11 +93,10 @@
 //    #define  DEFAULT_Ki 1.08  
 //    #define  DEFAULT_Kd 114  
 
-// Makergear - mark from spreadsheet
-    #define  DEFAULT_Kp 18.0
-    #define  DEFAULT_Ki .006 
-    #define  DEFAULT_Kd 12.0  
-
+// Makergear - mark from pidautotune
+    #define  DEFAULT_Kp 45.08
+    #define  DEFAULT_Ki 2.59
+    #define  DEFAULT_Kd 196.46
 
 
 // Mendel Parts V9 on 12V    
