@@ -39,7 +39,7 @@
 #For Arduino Mega2560
 MCU = atmega2560
 #For Sanguinololu
-MCU = atmega644p 
+#MCU = atmega644p 
 
 # Here you select "arduino", "Sanguino", "Gen7", ...
 HARDWARE_VARIANT 		= arduino
