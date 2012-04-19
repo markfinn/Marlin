@@ -50,7 +50,7 @@
 // 6 is EPCOS 100k
 // 7 is 100k Honeywell thermistor 135-104LAG-J01
 
-#define TEMP_SENSOR_0 1
+#define TEMP_SENSOR_0 6
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_BED 1
@@ -70,9 +70,9 @@
 // When temperature exceeds max temp, your heater will be switched off.
 // This feature exists to protect your hotend from overheating accidentally, but *NOT* from thermistor short/failure!
 // You should use MINTEMP for thermistor short/failure protection.
-#define HEATER_0_MAXTEMP 245
-#define HEATER_1_MAXTEMP 245
-#define HEATER_2_MAXTEMP 245
+#define HEATER_0_MAXTEMP 240
+#define HEATER_1_MAXTEMP 240
+#define HEATER_2_MAXTEMP 240
 #define BED_MAXTEMP 130
 
 
@@ -89,17 +89,19 @@
 
 // If you are using a preconfigured hotend then you can use one of the value sets by uncommenting it
 // Ultimaker
-//    #define  DEFAULT_Kp 22.2
+//    #define  DEFAULT_Kp  22.2
 //    #define  DEFAULT_Ki 1.08  
 //    #define  DEFAULT_Kd 114  
 
-// Makergear
-    #define  DEFAULT_Kp 7.0
-    #define  DEFAULT_Ki 1.0  
+// Makergear - mark from spreadsheet
+    #define  DEFAULT_Kp 18.0
+    #define  DEFAULT_Ki .006 
     #define  DEFAULT_Kd 12.0  
 
+
+
 // Mendel Parts V9 on 12V    
-//    #define  DEFAULT_Kp 63.0
+//    #define  DEFAULT_Kp  63.0
 //    #define  DEFAULT_Ki 2.25
 //    #define  DEFAULT_Kd 440
 #endif // PIDTEMP
@@ -167,7 +169,7 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 
 #define DEFAULT_AXIS_STEPS_PER_UNIT   {52.4934, 52.4934, 3200/1.25, 1487 / 1.16}
 #define DEFAULT_MAX_FEEDRATE          {500, 500, 5, 45} // (mm/sec) 
-#define DEFAULT_MAX_ACCELERATION      {9000,9000,100,10000} // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
+#define DEFAULT_MAX_ACCELERATION      {900,900,80,10000} // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
 
 #define DEFAULT_ACCELERATION          3000    // X, Y, Z and E max acceleration in mm/s^2 for printing moves 
 #define DEFAULT_RETRACT_ACCELERATION  3000   // X, Y, Z and E max acceleration in mm/s^2 for r retracts
@@ -196,14 +198,14 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 //#define ULTRA_LCD  //general lcd support, also 16x2
 //#define SDSUPPORT // Enable SD Card Support in Hardware Console
 
-#define ULTIPANEL
+//#define ULTIPANEL
 #ifdef ULTIPANEL
 //  #define NEWPANEL  //enable this if you have a click-encoder panel
   #define SDSUPPORT
   #define ULTRA_LCD
   #define LCD_WIDTH 20
   #define LCD_HEIGHT 4
-  
+
 // Preheat Constants
   #define PLA_PREHEAT_HOTEND_TEMP 180 
   #define PLA_PREHEAT_HPB_TEMP 70
@@ -216,7 +218,7 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 #else //no panel but just lcd 
   #ifdef ULTRA_LCD
     #define LCD_WIDTH 16
-    #define LCD_HEIGHT 2    
+    #define LCD_HEIGHT 2
   #endif
 #endif
 
