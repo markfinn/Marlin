@@ -44,7 +44,7 @@ MCU = atmega2560
 # Here you select "arduino", "Sanguino", "Gen7", ...
 HARDWARE_VARIANT 		= arduino
 # This defined the board you are compiling for
-HARDWARE_MOTHERBOARD	= 34
+HARDWARE_MOTHERBOARD	= 33
 
 # Arduino source install directory
 INSTALL_DIR = ../../arduino-0022
