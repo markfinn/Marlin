@@ -36,6 +36,7 @@
 #include "watchdog.h"
 #include "EEPROMwrite.h"
 #include "language.h"
+#include "pins_arduino.h"
 
 #define VERSION_STRING  "1.0.0 RC2"
 
@@ -104,12 +105,12 @@
 // M240 - Trigger a camera to take a photograph
 // M301 - Set PID parameters P I and D
 // M302 - Allow cold extrudes
+// M303 - PID relay autotune S<temperature> sets the target temperature. (default target temperature = 150C)
 // M400 - Finish all moves
 // M500 - stores paramters in EEPROM
 // M501 - reads parameters from EEPROM (if you need reset them after you changed them temporarily).  
 // M502 - reverts to the default "factory settings".  You still need to store them in EEPROM afterwards if you want to.
 // M503 - print the current settings (from memory not from eeprom)
-// M303 - PID relay autotune S<temperature> sets the target temperature. (default target temperature = 150C)
 // M999 - Restart after being stopped by error
 
 //Stepper Movement Variables
@@ -299,6 +300,8 @@ void setup()
   st_init();    // Initialize stepper;
   wd_init();
   setup_photpin();
+  
+  LCD_INIT;
 }
 
 
@@ -609,7 +612,7 @@ void process_commands()
       feedrate = 0.0;
       home_all_axis = !((code_seen(axis_codes[0])) || (code_seen(axis_codes[1])) || (code_seen(axis_codes[2])));
       #ifdef QUICK_HOME
-      if( code_seen(axis_codes[X_AXIS]) && code_seen(axis_codes[Y_AXIS]) )  //first diagonal move
+      if((home_all_axis)||( code_seen(axis_codes[X_AXIS]) && code_seen(axis_codes[Y_AXIS])) )  //first diagonal move
       {
         current_position[X_AXIS] = 0;current_position[Y_AXIS] = 0;  
 
@@ -686,7 +689,6 @@ void process_commands()
         st_synchronize();
       for(int8_t i=0; i < NUM_AXIS; i++) {
         if(code_seen(axis_codes[i])) { 
-           current_position[i] = code_value()+add_homeing[i];  
            if(i == E_AXIS) {
              current_position[i] = code_value();  
              plan_set_e_position(current_position[E_AXIS]);
@@ -940,8 +942,8 @@ void process_commands()
         #ifdef TEMP_RESIDENCY_TIME
             /* start/restart the TEMP_RESIDENCY_TIME timer whenever we reach target temp for the first time
               or when current temp falls outside the hysteresis after target temp was reached */
-          if ((residencyStart == -1 &&  target_direction && !isHeatingHotend(tmp_extruder)) ||
-              (residencyStart == -1 && !target_direction && !isCoolingHotend(tmp_extruder)) ||
+          if ((residencyStart == -1 &&  target_direction && (degHotend(tmp_extruder) >= (degTargetHotend(tmp_extruder)-TEMP_WINDOW))) ||
+              (residencyStart == -1 && !target_direction && (degHotend(tmp_extruder) <= (degTargetHotend(tmp_extruder)+TEMP_WINDOW))) ||
               (residencyStart > -1 && labs(degHotend(tmp_extruder) - degTargetHotend(tmp_extruder)) > TEMP_HYSTERESIS) ) 
           {
             residencyStart = millis();
@@ -1100,6 +1102,12 @@ void process_commands()
       
       SERIAL_PROTOCOLLN("");
       break;
+    case 120: // M120
+      enable_endstops(false) ;
+      break;
+    case 121: // M121
+      enable_endstops(true) ;
+      break;
     case 119: // M119
       #if (X_MIN_PIN > -1)
         SERIAL_PROTOCOLPGM(MSG_X_MIN);
@@ -1239,7 +1247,7 @@ void process_commands()
      }
     break;
       
-    case 302: // finish all moves
+    case 302: // allow cold extrudes
     {
       allow_cold_extrudes(true);
     }
@@ -1505,5 +1513,75 @@ void Stop()
 }
 
 bool IsStopped() { return Stopped; };
+
+#ifdef FAST_PWM_FAN
+void setPwmFrequency(uint8_t pin, int val)
+{
+  val &= 0x07;
+  switch(digitalPinToTimer(pin))
+  {
+ 
+    #if defined(TCCR0A)
+    case TIMER0A:
+    case TIMER0B:
+         TCCR0B &= ~(CS00 | CS01 | CS02);
+         TCCR0B |= val;
+         break;
+    #endif
+
+    #if defined(TCCR1A)
+    case TIMER1A:
+    case TIMER1B:
+         TCCR1B &= ~(CS10 | CS11 | CS12);
+         TCCR1B |= val;
+         break;
+    #endif
+
+    #if defined(TCCR2)
+    case TIMER2:
+    case TIMER2:
+         TCCR2 &= ~(CS10 | CS11 | CS12);
+         TCCR2 |= val;
+         break;
+    #endif
+
+    #if defined(TCCR2A)
+    case TIMER2A:
+    case TIMER2B:
+         TCCR2B &= ~(CS20 | CS21 | CS22);
+         TCCR2B |= val;
+         break;
+    #endif
+
+    #if defined(TCCR3A)
+    case TIMER3A:
+    case TIMER3B:
+    case TIMER3C:
+         TCCR3B &= ~(CS30 | CS31 | CS32);
+         TCCR3B |= val;
+         break;
+    #endif
+
+    #if defined(TCCR4A) 
+    case TIMER4A:
+    case TIMER4B:
+    case TIMER4C:
+         TCCR4B &= ~(CS40 | CS41 | CS42);
+         TCCR4B |= val;
+         break;
+   #endif
+
+    #if defined(TCCR5A) 
+    case TIMER5A:
+    case TIMER5B:
+    case TIMER5C:
+         TCCR5B &= ~(CS50 | CS51 | CS52);
+         TCCR5B |= val;
+         break;
+   #endif
+
+  }
+}
+#endif
 
 

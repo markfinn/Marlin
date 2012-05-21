@@ -554,7 +554,10 @@
 * Sanguinololu pin assignment
 *
 ****************************************************************************************/
-#if MOTHERBOARD == 62
+#if MOTHERBOARD == 63
+#define MELZI
+#endif
+#if MOTHERBOARD == 62 || MOTHERBOARD == 63
 #undef MOTHERBOARD
 #define MOTHERBOARD 6
 #define SANGUINOLOLU_V_1_2 
@@ -589,6 +592,11 @@
 
 #define FAN_PIN            -1 
 
+#ifdef MELZI
+#define LED_PIN            28
+#define FAN_PIN            4
+#endif
+
 #define PS_ON_PIN          -1
 #define KILL_PIN           -1
 
@@ -620,6 +628,10 @@
 #define TEMP_BED_PIN        6   // MUST USE ANALOG INPUT NUMBERING NOT DIGITAL OUTPUT NUMBERING!!!!!!!!! (pin 34 bed)
 #define SDPOWER            -1
 #define SDSS               31
+
+#ifdef MELZI
+#define SDSS               24
+#endif
 
 #endif
 
@@ -729,10 +741,18 @@
     #define LCD_PINS_D7 19
     
     //encoder rotation values
-    #define encrot0 0
-    #define encrot1 2
-    #define encrot2 3
-    #define encrot3 1
+    #ifndef ULTIMAKERCONTROLLER
+     #define encrot0 0
+     #define encrot1 2
+     #define encrot2 3
+     #define encrot3 1
+    #else
+     #define encrot0 0
+     #define encrot1 1
+     #define encrot2 3
+     #define encrot3 2
+
+    #endif
 
     #define SDCARDDETECT -1
     //bits in the shift register that carry the buttons for:

@@ -134,8 +134,8 @@ void PID_autotune(float temp)
   long t_high;
   long t_low;
 
-  long bias=127;
-  long d = 127;
+  long bias=PID_MAX/2;
+  long d = PID_MAX/2;
   float Ku, Tu;
   float Kp, Ki, Kd;
   float max, min;
@@ -144,7 +144,7 @@ void PID_autotune(float temp)
   
   disable_heater(); // switch off all heaters.
   
-  soft_pwm[0] = 255>>1;
+  soft_pwm[0] = PID_MAX/2;
     
   for(;;) {
 
@@ -172,8 +172,8 @@ void PID_autotune(float temp)
           t_low=t2 - t1;
           if(cycles > 0) {
             bias += (d*(t_high - t_low))/(t_low + t_high);
-            bias = constrain(bias, 20 ,235);
-            if(bias > 127) d = 254 - bias;
+            bias = constrain(bias, 20 ,PID_MAX-20);
+            if(bias > PID_MAX/2) d = PID_MAX - 1 - bias;
             else d = bias;
 
             SERIAL_PROTOCOLPGM(" bias: "); SERIAL_PROTOCOL(bias);
@@ -559,6 +559,9 @@ void tp_init()
   #endif  
   #if (FAN_PIN > -1) 
     SET_OUTPUT(FAN_PIN);
+    #ifdef FAST_PWM_FAN
+    setPwmFrequency(FAN_PIN, 1); // No prescaling. Pwm frequency = F_CPU/256/8
+    #endif
   #endif  
 
   #ifdef HEATER_0_USES_MAX6675
@@ -710,7 +713,7 @@ void max_temp_error(uint8_t e) {
   disable_heater();
   if(IsStopped() == false) {
     SERIAL_ERROR_START;
-    SERIAL_ERRORLN(e);
+    SERIAL_ERRORLN((int)e);
     SERIAL_ERRORLNPGM(": Extruder switched off. MAXTEMP triggered !");
   }
 }
@@ -719,13 +722,15 @@ void min_temp_error(uint8_t e) {
   disable_heater();
   if(IsStopped() == false) {
     SERIAL_ERROR_START;
-    SERIAL_ERRORLN(e);
+    SERIAL_ERRORLN((int)e);
     SERIAL_ERRORLNPGM(": Extruder switched off. MINTEMP triggered !");
   }
 }
 
 void bed_max_temp_error(void) {
+#if HEATER_BED_PIN > -1
   WRITE(HEATER_BED_PIN, 0);
+#endif
   if(IsStopped() == false) {
     SERIAL_ERROR_START;
     SERIAL_ERRORLNPGM("Temperature heated bed switched off. MAXTEMP triggered !!");

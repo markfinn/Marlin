@@ -8,7 +8,7 @@
 //User specified version info of THIS file to display in [Pronterface, etc] terminal window during startup.
 //Implementation of an idea by Prof Braino to inform user that any changes made
 //to THIS file by the user have been successfully uploaded into firmware.
-#define STRING_VERSION_CONFIG_H "2012-02-25" //Personal revision number for changes to THIS file.
+#define STRING_VERSION_CONFIG_H "2012-05-02" //Personal revision number for changes to THIS file.
 #define STRING_CONFIG_H_AUTHOR "erik" //Who made the changes.
 
 // This determines the communication speed of the printer
@@ -26,6 +26,7 @@
 // Gen6 = 5
 // Gen6 deluxe = 51
 // Sanguinololu 1.2 and above = 62
+// Melzi = 63
 // Ultimaker = 7
 // Teensylu = 8
 // Gen3+ =9
@@ -58,6 +59,7 @@
 // Actual temperature must be close to target for this long before M109 returns success
 #define TEMP_RESIDENCY_TIME 10	// (seconds)
 #define TEMP_HYSTERESIS 3       // (degC) range of +/- temperatures considered "close" to the target one
+#define TEMP_WINDOW     1       // (degC) Window around target to start the recidency timer x degC early.
 
 // The minimal temperature defines the temperature below which the heater will not be enabled It is used
 // to check that the wiring to the thermistor is not broken. 
@@ -198,7 +200,12 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 //#define ULTRA_LCD  //general lcd support, also 16x2
 //#define SDSUPPORT // Enable SD Card Support in Hardware Console
 
-//#define ULTIPANEL
+#ifdef ULTIMAKERCONTROLLER    //automatic expansion
+ #define ULTIPANEL
+ #define NEWPANEL
+#endif 
+ 
+
 #ifdef ULTIPANEL
 //  #define NEWPANEL  //enable this if you have a click-encoder panel
   #define SDSUPPORT
@@ -221,6 +228,9 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
     #define LCD_HEIGHT 2
   #endif
 #endif
+
+// Increase the FAN pwm frequency. Removes the PWM noise but increases heating in the FET/Arduino
+#define FAST_PWM_FAN
 
 // M240  Triggers a camera by emulating a Canon RC-1 Remote
 // Data from: http://www.doc-diy.net/photo/rc-1_hacked/
