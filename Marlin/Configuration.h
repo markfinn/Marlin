@@ -50,7 +50,7 @@
 // 6 is EPCOS 100k
 // 7 is 100k Honeywell thermistor 135-104LAG-J01
 
-#define TEMP_SENSOR_0 6
+#define TEMP_SENSOR_0 1
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_BED 1
@@ -145,13 +145,13 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 
 // ENDSTOP SETTINGS:
 // Sets direction of endstops when homing; 1=MAX, -1=MIN
-#define X_HOME_DIR -1
-#define Y_HOME_DIR 1
+#define X_HOME_DIR 1
+#define Y_HOME_DIR -1
 #define Z_HOME_DIR -1
 
 #define min_software_endstops true //If true, axis won't move to coordinates less than HOME_POS.
 #define max_software_endstops true  //If true, axis won't move to coordinates greater than the defined lengths below.
-#define X_MAX_LENGTH 200
+#define X_MAX_LENGTH 182 //200
 #define Y_MAX_LENGTH 198
 #define Z_MAX_LENGTH 86
 
@@ -166,8 +166,9 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 
 // default settings 
 
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {52.4934, 52.4934, 3200/1.25, 1487 / 1.16}
-#define DEFAULT_MAX_FEEDRATE          {500, 500, 5, 45} // (mm/sec) 
+//orig makergear extruder and 8mm z axis #define DEFAULT_AXIS_STEPS_PER_UNIT   {52.4934, 52.4934, 3200/1.25, 1487 / 1.16}
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {52.4934, 52.4934, 3200/(25.4/16), 200.*16.*47./9./17.87}
+#define DEFAULT_MAX_FEEDRATE          {500, 500, 5, 5} // (mm/sec) 
 #define DEFAULT_MAX_ACCELERATION      {900,900,80,10000} // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
 
 #define DEFAULT_ACCELERATION          3000    // X, Y, Z and E max acceleration in mm/s^2 for printing moves 
