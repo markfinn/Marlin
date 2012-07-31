@@ -1,5 +1,5 @@
-#ifndef __CONFIGURATION_ADV_H
-#define __CONFIGURATION_ADV_H
+#ifndef CONFIGURATION_ADV_H
+#define CONFIGURATION_ADV_H
 
 //===========================================================================
 //=============================Thermal Settings  ============================
@@ -87,6 +87,12 @@
 #define AXIS_RELATIVE_MODES {false, false, false, false}
 
 #define MAX_STEP_FREQUENCY 40000 // Max step frequency for Ultimaker (5000 pps / half step)
+
+//By default pololu step drivers require an active high signal. However, some high power drivers require an active low signal as step.
+#define INVERT_X_STEP_PIN false
+#define INVERT_Y_STEP_PIN false
+#define INVERT_Z_STEP_PIN false
+#define INVERT_E_STEP_PIN false
 
 //default stepper release if idle
 #define DEFAULT_STEPPER_DEACTIVE_TIME 60
@@ -181,6 +187,16 @@ const int dropsegments=1; //everything with less than this number of steps will 
 //The ASCII buffer for recieving from the serial:
 #define MAX_CMD_SIZE 96
 #define BUFSIZE 4
+
+
+// Firmware based and LCD controled retract
+// M207 and M208 can be used to define parameters for the retraction. 
+// The retraction can be called by the slicer using G10 and G11
+// until then, intended retractions can be detected by moves that only extrude and the direction. 
+// the moves are than replaced by the firmware controlled ones.
+
+// #define FWRETRACT  //ONLY PARTIALLY TESTED
+#define MIN_RETRACT 0.1 //minimum extruded mm to accept a automatic gcode retraction attempt
 
 //===========================================================================
 //=============================  Define Defines  ============================
