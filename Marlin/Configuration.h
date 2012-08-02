@@ -1,6 +1,9 @@
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 
+//temp while starting up mendelmax
+#define BOGUS_TEMPERATURE_FAILSAFE_OVERRIDE
+
 // This configurtion file contains the basic settings.
 // Advanced settings can be found in Configuration_adv.h 
 // BASIC SETTINGS: select your board type, temperature sensor type, axis scaling, and endstop configuration
@@ -105,6 +108,7 @@
 //    #define  DEFAULT_Ki 1.08  
 //    #define  DEFAULT_Kd 114  
 
+//do this
 // Makergear - mark from pidautotune
     #define  DEFAULT_Kp 45.08
     #define  DEFAULT_Ki 2.59
@@ -159,7 +163,7 @@
 const bool X_ENDSTOPS_INVERTING = true; // set to true to invert the logic of the endstops. 
 const bool Y_ENDSTOPS_INVERTING = true; // set to true to invert the logic of the endstops. 
 const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of the endstops. 
-//#define DISABLE_MAX_ENDSTOPS
+#define DISABLE_MAX_ENDSTOPS -1 //temp until I add mine 
 
 // For Inverting Stepper Enable Pins (Active Low) use 0, Non Inverting (Active High) use 1
 #define X_ENABLE_ON 0
@@ -212,11 +216,11 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 
 // default settings 
 
-//orig makergear extruder and 8mm z axis #define DEFAULT_AXIS_STEPS_PER_UNIT   {52.4934, 52.4934, 3200/1.25, 1487 / 1.16}
-//mark extruder with acme Z #define DEFAULT_AXIS_STEPS_PER_UNIT   {52.4934, 52.4934, 3200/(25.4/16), 200.*16.*47./9./17.87}
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {52.4934, 52.4934, 3200/(25.4/16), 1487 / 1.16}
+//your retract speed in slic3r should be set to 10mm/sec.
+
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {80, 80, 3200/(25.4/12), 826}
 #define DEFAULT_MAX_FEEDRATE          {500, 500, 5, 15} // (mm/sec) 
-#define DEFAULT_MAX_ACCELERATION      {900,900,80,10000} // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
+#define DEFAULT_MAX_ACCELERATION      {900,900,80,500} // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
 
 #define DEFAULT_ACCELERATION          3000    // X, Y, Z and E max acceleration in mm/s^2 for printing moves 
 #define DEFAULT_RETRACT_ACCELERATION  3000   // X, Y, Z and E max acceleration in mm/s^2 for r retracts
