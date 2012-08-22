@@ -163,7 +163,7 @@
 const bool X_ENDSTOPS_INVERTING = true; // set to true to invert the logic of the endstops. 
 const bool Y_ENDSTOPS_INVERTING = true; // set to true to invert the logic of the endstops. 
 const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of the endstops. 
-#define DISABLE_MAX_ENDSTOPS -1 //temp until I add mine 
+//#define DISABLE_MAX_ENDSTOPS
 
 // For Inverting Stepper Enable Pins (Active Low) use 0, Non Inverting (Active High) use 1
 #define X_ENABLE_ON 0
@@ -187,17 +187,17 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 // ENDSTOP SETTINGS:
 // Sets direction of endstops when homing; 1=MAX, -1=MIN
 #define X_HOME_DIR 1
-#define Y_HOME_DIR -1
+#define Y_HOME_DIR 1
 #define Z_HOME_DIR -1
 
 #define min_software_endstops true //If true, axis won't move to coordinates less than HOME_POS.
 #define max_software_endstops true  //If true, axis won't move to coordinates greater than the defined lengths below.
 
 // Travel limits after homing
-#define X_MAX_POS ((256-20-20)/2)
-#define X_MIN_POS (-(256-20-20)/2)
-#define Y_MAX_POS ((346-60-60)/2)
-#define Y_MIN_POS (-(346-60-60)/2)
+#define X_MAX_POS (256/2)
+#define X_MIN_POS (-256/2)
+#define Y_MAX_POS (346/2)
+#define Y_MIN_POS (-346/2)
 #define Z_MAX_POS 132
 #define Z_MIN_POS 0
 
@@ -206,8 +206,8 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 #define Z_MAX_LENGTH (Z_MAX_POS - Z_MIN_POS)
 
 // The position of the homing switches. Use MAX_LENGTH * -0.5 if the center should be 0, 0, 0
-#define X_HOME_POS (X_MAX_POS + 20)
-#define Y_HOME_POS (Y_MIN_POS - 60)
+#define X_HOME_POS X_MAX_POS
+#define Y_HOME_POS Y_MAX_POS
 #define Z_HOME_POS 0
 
 //// MOVEMENT SETTINGS
