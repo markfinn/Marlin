@@ -194,11 +194,11 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 #define max_software_endstops true  //If true, axis won't move to coordinates greater than the defined lengths below.
 
 // Travel limits after homing
-#define X_MAX_POS (257-20)
-#define X_MIN_POS 20
-#define Y_MAX_POS (347-60)
-#define Y_MIN_POS 60
-#define Z_MAX_POS 86
+#define X_MAX_POS ((256-20-20)/2)
+#define X_MIN_POS (-(256-20-20)/2)
+#define Y_MAX_POS ((346-60-60)/2)
+#define Y_MIN_POS (-(346-60-60)/2)
+#define Z_MAX_POS 132
 #define Z_MIN_POS 0
 
 #define X_MAX_LENGTH (X_MAX_POS - X_MIN_POS)
@@ -206,8 +206,8 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 #define Z_MAX_LENGTH (Z_MAX_POS - Z_MIN_POS)
 
 // The position of the homing switches. Use MAX_LENGTH * -0.5 if the center should be 0, 0, 0
-#define X_HOME_POS 200
-#define Y_HOME_POS 0
+#define X_HOME_POS (X_MAX_POS + 20)
+#define Y_HOME_POS (Y_MIN_POS - 60)
 #define Z_HOME_POS 0
 
 //// MOVEMENT SETTINGS
@@ -216,17 +216,14 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 
 // default settings 
 
-//your retract speed in slic3r should be set to 10mm/sec.
-
 #define DEFAULT_AXIS_STEPS_PER_UNIT   {80, 80, 3200/(25.4/12), 885}
 #define DEFAULT_MAX_FEEDRATE          {500, 500, 5, 15} // (mm/sec) 
-#define DEFAULT_MAX_ACCELERATION      {2000,2000,80,500} // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
+#define DEFAULT_MAX_ACCELERATION      {2000,1000,80,500} // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
 
 #define DEFAULT_ACCELERATION          3000    // X, Y, Z and E max acceleration in mm/s^2 for printing moves 
 #define DEFAULT_RETRACT_ACCELERATION  3000   // X, Y, Z and E max acceleration in mm/s^2 for r retracts
 
-// 
-#define DEFAULT_XYJERK                20.0    // (mm/sec)
+#define DEFAULT_XYJERK                10.0    // (mm/sec)
 #define DEFAULT_ZJERK                 0.4     // (mm/sec)
 #define DEFAULT_EJERK                 5.0    // (mm/sec)
 
