@@ -186,7 +186,7 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 
 // ENDSTOP SETTINGS:
 // Sets direction of endstops when homing; 1=MAX, -1=MIN
-#define X_HOME_DIR 1
+#define X_HOME_DIR -1
 #define Y_HOME_DIR 1
 #define Z_HOME_DIR -1
 
@@ -206,7 +206,7 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 #define Z_MAX_LENGTH (Z_MAX_POS - Z_MIN_POS)
 
 // The position of the homing switches. Use MAX_LENGTH * -0.5 if the center should be 0, 0, 0
-#define X_HOME_POS X_MAX_POS
+#define X_HOME_POS 0
 #define Y_HOME_POS Y_MAX_POS
 #define Z_HOME_POS 0
 
