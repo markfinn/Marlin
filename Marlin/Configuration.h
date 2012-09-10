@@ -87,6 +87,10 @@
 #define HEATER_2_MAXTEMP 255
 #define BED_MAXTEMP 130
 
+// If your bed has low resistance e.g. .6 ohm and throws the fuse you can duty cycle it to reduce the
+// average current. The value should be an integer and the heat bed will be turned on for 1 interval of
+// HEATER_BED_DUTY_CYCLE_DIVIDER intervals.
+//#define HEATER_BED_DUTY_CYCLE_DIVIDER 4
 
 // PID settings:
 // Comment the following line to disable PID and enable bang-bang.
@@ -276,11 +280,14 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 #endif
 
 // Increase the FAN pwm frequency. Removes the PWM noise but increases heating in the FET/Arduino
-#define FAST_PWM_FAN
+//#define FAST_PWM_FAN
 
 // M240  Triggers a camera by emulating a Canon RC-1 Remote
 // Data from: http://www.doc-diy.net/photo/rc-1_hacked/
 // #define PHOTOGRAPH_PIN     23
+
+// SF send wrong arc g-codes when using Arc Point as fillet procedure
+//#define SF_ARC_FIX
 
 #include "Configuration_adv.h"
 #include "thermistortables.h"
