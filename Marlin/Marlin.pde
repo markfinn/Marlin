@@ -1106,7 +1106,7 @@ void process_commands()
         LCD_MESSAGEPGM(MSG_BED_HEATING);
         if (code_seen('S')) setTargetBed(code_value());
         codenum = millis(); 
-        while(isHeatingBed()) 
+         while((degTargetBed() - degBed()) > TEMP_HYSTERESIS) 
         {
           if(( millis() - codenum) > 1000 ) //Print Temp Reading every 1 second while heating up.
           {
