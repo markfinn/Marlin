@@ -258,16 +258,16 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 
 // default settings 
 
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {80, 80, 3200/(25.4/12), 885}
-#define DEFAULT_MAX_FEEDRATE          {500, 500, 5, 15} // (mm/sec) 
-#define DEFAULT_MAX_ACCELERATION      {2000,1500,80,500} // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {80, 80, 3200/(25.4/12), 758}
+#define DEFAULT_MAX_FEEDRATE          {500, 500, 5, 20} // (mm/sec) 
+#define DEFAULT_MAX_ACCELERATION      {2000,1500,80,10000} // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
 
 #define DEFAULT_ACCELERATION          3000    // X, Y, Z and E max acceleration in mm/s^2 for printing moves 
 #define DEFAULT_RETRACT_ACCELERATION  3000   // X, Y, Z and E max acceleration in mm/s^2 for r retracts
 
 #define DEFAULT_XYJERK                20.0    // (mm/sec)
 #define DEFAULT_ZJERK                 1.5     // (mm/sec)
-#define DEFAULT_EJERK                 2.5    // (mm/sec)
+#define DEFAULT_EJERK                 10    // (mm/sec)
 
 //===========================================================================
 //=============================Additional Features===========================
