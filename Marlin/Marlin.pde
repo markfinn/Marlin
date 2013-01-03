@@ -1059,6 +1059,13 @@ void process_commands()
             SERIAL_PROTOCOL_F(degHotend(tmp_extruder),1); 
             SERIAL_PROTOCOLPGM(" E:");
             SERIAL_PROTOCOL((int)tmp_extruder); 
+            SERIAL_PROTOCOLPGM(" B:");
+            SERIAL_PROTOCOL_F(degBed(),1); 
+        SERIAL_PROTOCOLPGM(" @:");
+        SERIAL_PROTOCOL(getHeaterPower(tmp_extruder));  
+
+        SERIAL_PROTOCOLPGM(" B@:");
+        SERIAL_PROTOCOL(getHeaterPower(-1));  
             #ifdef TEMP_RESIDENCY_TIME
               SERIAL_PROTOCOLPGM(" W:");
               if(residencyStart > -1)
@@ -1110,6 +1117,11 @@ void process_commands()
             SERIAL_PROTOCOL((int)active_extruder); 
             SERIAL_PROTOCOLPGM(" B:");
             SERIAL_PROTOCOL_F(degBed(),1); 
+        SERIAL_PROTOCOLPGM(" @:");
+        SERIAL_PROTOCOL(getHeaterPower(tmp_extruder));  
+
+        SERIAL_PROTOCOLPGM(" B@:");
+        SERIAL_PROTOCOL(getHeaterPower(-1));  
             SERIAL_PROTOCOLLN(""); 
             codenum = millis(); 
           }
