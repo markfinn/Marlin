@@ -6,7 +6,11 @@
 #include "language.h"
 #include "temperature.h"
 #include "EEPROMwrite.h"
+#if LANGUAGE_CHOICE == 6
+#include "LiquidCrystalRus.h"
+#else
 #include <LiquidCrystal.h>
+#endif
 //===========================================================================
 //=============================imported variables============================
 //===========================================================================
@@ -38,7 +42,11 @@ static char messagetext[LCD_WIDTH]="";
 //return for string conversion routines
 static char conv[8];
 
+#if LANGUAGE_CHOICE == 6
+LiquidCrystalRus lcd(LCD_PINS_RS, LCD_PINS_ENABLE, LCD_PINS_D4, LCD_PINS_D5,LCD_PINS_D6,LCD_PINS_D7);  //RS,Enable,D4,D5,D6,D7
+#else
 LiquidCrystal lcd(LCD_PINS_RS, LCD_PINS_ENABLE, LCD_PINS_D4, LCD_PINS_D5,LCD_PINS_D6,LCD_PINS_D7);  //RS,Enable,D4,D5,D6,D7 
+#endif
 
 static unsigned long previous_millis_lcd=0;
 //static long previous_millis_buttons=0;
@@ -358,11 +366,11 @@ void MainMenu::showStatus()
   {
     encoderpos=feedmultiply;
     clear();
-    lcd.setCursor(0,0);lcdprintPGM("\002---/---\001 ");
+    lcd.setCursor(0,0);lcdprintPGM("\002000/000\001 ");
     #if defined BED_USES_THERMISTOR || defined BED_USES_AD595 
-      lcd.setCursor(10,0);lcdprintPGM("B---/---\001 ");
+      lcd.setCursor(10,0);lcdprintPGM("B000/000\001 ");
     #elif EXTRUDERS > 1
-      lcd.setCursor(10,0);lcdprintPGM("\002---/---\001 ");
+      lcd.setCursor(10,0);lcdprintPGM("\002000/000\001 ");
     #endif
   }
     
@@ -1849,7 +1857,7 @@ void MainMenu::showControlMotion()
       if(force_lcd_update)
         {
           lcd.setCursor(0,line);lcdprintPGM(MSG_ZSTEPS);
-          lcd.setCursor(11,line);lcd.print(ftostr52(axis_steps_per_unit[Z_AXIS]));
+          lcd.setCursor(11,line);lcd.print(ftostr51(axis_steps_per_unit[Z_AXIS]));
         }
         
         if((activeline!=line) )
@@ -1888,7 +1896,7 @@ void MainMenu::showControlMotion()
       if(force_lcd_update)
         {
           lcd.setCursor(0,line);lcdprintPGM(MSG_ESTEPS);
-          lcd.setCursor(11,line);lcd.print(ftostr52(axis_steps_per_unit[E_AXIS]));
+          lcd.setCursor(11,line);lcd.print(ftostr51(axis_steps_per_unit[E_AXIS]));
         }
         
         if((activeline!=line) )
