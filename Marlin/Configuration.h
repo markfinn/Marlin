@@ -82,7 +82,7 @@
 // 52 is 200k thermistor - ATC Semitec 204GT-2 (1k pullup)
 // 55 is 100k thermistor - ATC Semitec 104GT-2 (Used in ParCan) (1k pullup)
 
-#define TEMP_SENSOR_0 1
+#define TEMP_SENSOR_0 991 //custom table
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_BED 1
@@ -137,10 +137,10 @@
 //    #define  DEFAULT_Ki 2.59
 //    #define  DEFAULT_Kd 196.46
 
-// medelmax - mark from pidautotune
-    #define  DEFAULT_Kp 34.89
-    #define  DEFAULT_Ki 3.55
-    #define  DEFAULT_Kd 80
+// medelmax - mark from pidautotune, heater cartridge @24v
+    #define  DEFAULT_Kp 13.64
+    #define  DEFAULT_Ki 1.48
+    #define  DEFAULT_Kd 31.51
 
 // Mendel Parts V9 on 12V    
 //    #define  DEFAULT_Kp 63.0
