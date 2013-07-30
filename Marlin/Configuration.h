@@ -120,17 +120,17 @@
 #ifdef PIDTEMP
   //#define PID_DEBUG // Sends debug data to the serial port. 
   //#define PID_OPENLOOP 1 // Puts PID in open loop. M104/M140 sets the output power from 0 to PID_MAX
-  #define PID_FUNCTIONAL_RANGE 70 // If the temperature difference between the target temperature and the actual temperature
+  #define PID_FUNCTIONAL_RANGE 200 // If the temperature difference between the target temperature and the actual temperature
                                   // is more then PID_FUNCTIONAL_RANGE then the PID will be shut off and the heater will be set to min/max.
-  #define PID_INTEGRAL_DRIVE_MAX 255  //limit for the integral term
-  #define K1 0.95 //smoothing factor withing the PID
+  #define PID_INTEGRAL_DRIVE_MAX 44  //limit for the integral term
+  #define K1 0.85 //smoothing factor withing the PID
   #define PID_dT ((16.0 * 8.0)/(F_CPU / 64.0 / 256.0)) //sampling period of the temperature routine
 
 // If you are using a preconfigured hotend then you can use one of the value sets by uncommenting it
 // Ultimaker
-    #define  DEFAULT_Kp 22.2
-    #define  DEFAULT_Ki 1.08  
-    #define  DEFAULT_Kd 114  
+//    #define  DEFAULT_Kp 22.2
+//    #define  DEFAULT_Ki 1.08  
+//    #define  DEFAULT_Kd 114  
 
 // Makergear - mark from pidautotune
 //    #define  DEFAULT_Kp 45.08
@@ -138,9 +138,9 @@
 //    #define  DEFAULT_Kd 196.46
 
 // medelmax - mark from pidautotune, heater cartridge @24v
-    #define  DEFAULT_Kp 13.64
-    #define  DEFAULT_Ki 1.48
-    #define  DEFAULT_Kd 31.51
+    #define  DEFAULT_Kp 17.5
+    #define  DEFAULT_Ki 2
+    #define  DEFAULT_Kd 38
 
 // Mendel Parts V9 on 12V    
 //    #define  DEFAULT_Kp 63.0
