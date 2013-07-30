@@ -208,15 +208,13 @@ void PID_autotune(float temp, int extruder, int ncycles)
           t2=millis();
           t_low=t2 - t1;
           if(cycles > 0) {
-            bias += (d*(t_high - t_low))/(t_low + t_high);
-            bias = constrain(bias, 20 ,(extruder<0?(MAX_BED_POWER):(PID_MAX))-20);
-            if(bias > (extruder<0?(MAX_BED_POWER):(PID_MAX))/2) d = (extruder<0?(MAX_BED_POWER):(PID_MAX)) - 1 - bias;
-            else d = bias;
 
             SERIAL_PROTOCOLPGM(" bias: "); SERIAL_PROTOCOL(bias);
             SERIAL_PROTOCOLPGM(" d: "); SERIAL_PROTOCOL(d);
             SERIAL_PROTOCOLPGM(" min: "); SERIAL_PROTOCOL(min);
-            SERIAL_PROTOCOLPGM(" max: "); SERIAL_PROTOCOLLN(max);
+            SERIAL_PROTOCOLPGM(" max: "); SERIAL_PROTOCOL(max);
+            SERIAL_PROTOCOLPGM(" t_low: "); SERIAL_PROTOCOL(t_low);
+            SERIAL_PROTOCOLPGM(" t_high: "); SERIAL_PROTOCOLLN(t_high);
             if(cycles > 2) {
               Ku = (4.0*d)/(3.14159*(max-min)/2.0);
               Tu = ((float)(t_low + t_high)/1000.0);
@@ -246,6 +244,10 @@ void PID_autotune(float temp, int extruder, int ncycles)
               SERIAL_PROTOCOLPGM(" Kd: "); SERIAL_PROTOCOLLN(Kd);
               */
             }
+            bias += (5-min(cycles,4))/5.0*(d*(t_high - t_low))/(t_low + t_high);
+            bias = constrain(bias, 20 ,(extruder<0?(MAX_BED_POWER):(PID_MAX))-20);
+            if(bias+bias > (extruder<0?(MAX_BED_POWER):(PID_MAX))) d = (extruder<0?(MAX_BED_POWER):(PID_MAX)) - bias;
+            else d = bias;
           }
 					if (extruder<0)
 						soft_pwm_bed = (bias + d) >> 1;
