@@ -199,7 +199,7 @@ void PID_autotune(float temp, int extruder, int ncycles)
 						soft_pwm[extruder] = (bias - d) >> 1;
           t1=millis();
           t_high=t1 - t2;
-          max=temp;
+          max=input;
         }
       }
       if(heating == false && input < temp) {
@@ -254,7 +254,7 @@ void PID_autotune(float temp, int extruder, int ncycles)
 					else
 						soft_pwm[extruder] = (bias + d) >> 1;
           cycles++;
-          min=temp;
+          min=input;
         }
       } 
     }
@@ -298,7 +298,7 @@ void updatePID()
   }
 #endif
 #ifdef PIDTEMPBED
-  temp_iState_max_bed = PID_INTEGRAL_DRIVE_MAX / bedKi;  
+  temp_iState_max_bed = PID_INTEGRAL_DRIVE_MAX_BED / bedKi;  
 #endif
 }
   
@@ -583,7 +583,7 @@ void tp_init()
 #endif //PIDTEMP
 #ifdef PIDTEMPBED
     temp_iState_min_bed = 0.0;
-    temp_iState_max_bed = PID_INTEGRAL_DRIVE_MAX / bedKi;
+    temp_iState_max_bed = PID_INTEGRAL_DRIVE_MAX_BED / bedKi;
 #endif //PIDTEMPBED
   }
 

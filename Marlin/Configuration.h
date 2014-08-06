@@ -122,8 +122,8 @@
   //#define PID_OPENLOOP 1 // Puts PID in open loop. M104/M140 sets the output power from 0 to PID_MAX
   #define PID_FUNCTIONAL_RANGE 200 // If the temperature difference between the target temperature and the actual temperature
                                   // is more then PID_FUNCTIONAL_RANGE then the PID will be shut off and the heater will be set to min/max.
-  #define PID_INTEGRAL_DRIVE_MAX 44  //limit for the integral term
-  #define K1 0.85 //smoothing factor withing the PID
+  #define PID_INTEGRAL_DRIVE_MAX 90  //limit for the integral term
+  #define K1 0.95 //smoothing factor withing the PID
   #define PID_dT ((16.0 * 8.0)/(F_CPU / 64.0 / 256.0)) //sampling period of the temperature routine
 
 // If you are using a preconfigured hotend then you can use one of the value sets by uncommenting it
@@ -137,10 +137,10 @@
 //    #define  DEFAULT_Ki 2.59
 //    #define  DEFAULT_Kd 196.46
 
-// medelmax - mark from pidautotune, heater cartridge @24v
-    #define  DEFAULT_Kp 17.5
-    #define  DEFAULT_Ki 2
-    #define  DEFAULT_Kd 38
+// medelmax - mark from pidautotune, heater cartridge @24v 29 17s
+    #define  DEFAULT_Kp 17.4
+    #define  DEFAULT_Ki 2.04
+    #define  DEFAULT_Kd 37
 
 // Mendel Parts V9 on 12V    
 //    #define  DEFAULT_Kp 63.0
@@ -170,10 +170,12 @@
 
 #ifdef PIDTEMPBED
 //120v 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
-//from FOPDT model - kp=.39 Tp=405 Tdead=66, Tc set to 79.2, argressive factor of .15 (vs .1, 1, 10)
-    #define  DEFAULT_bedKp 10.00
-    #define  DEFAULT_bedKi .023
-    #define  DEFAULT_bedKd 305.4
+//from “Ultimate Gain” Zeigler–Nichols Ku=160, Tu=50s
+    #define  DEFAULT_bedKp 96
+    #define  DEFAULT_bedKi 3.84
+    #define  DEFAULT_bedKd 600
+
+  #define PID_INTEGRAL_DRIVE_MAX_BED 230  //limit for the integral term
 
 //120v 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
 //from pidautotune
@@ -357,7 +359,7 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 #endif
 
 // Increase the FAN pwm frequency. Removes the PWM noise but increases heating in the FET/Arduino
-//#define FAST_PWM_FAN
+#define FAST_PWM_FAN
 
 // M240  Triggers a camera by emulating a Canon RC-1 Remote
 // Data from: http://www.doc-diy.net/photo/rc-1_hacked/

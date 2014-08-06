@@ -1128,10 +1128,10 @@ void process_commands()
     #if FAN_PIN > -1
       case 106: //M106 Fan On
         if (code_seen('S')){
-           fanSpeed=constrain(code_value(),0,255);
+           fanSpeed=constrain(code_value()/2,0,128);
         }
         else {
-          fanSpeed=255;			
+          fanSpeed=128;			
         }
         break;
       case 107: //M107 Fan Off
