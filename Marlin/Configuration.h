@@ -102,7 +102,7 @@
 // 147 is Pt100 with 4k7 pullup
 // 110 is Pt100 with 1k pullup (non standard)
 
-#define TEMP_SENSOR_0 991 //custom table
+#define TEMP_SENSOR_0 5
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_BED 1
@@ -127,9 +127,9 @@
 // When temperature exceeds max temp, your heater will be switched off.
 // This feature exists to protect your hotend from overheating accidentally, but *NOT* from thermistor short/failure!
 // You should use MINTEMP for thermistor short/failure protection.
-#define HEATER_0_MAXTEMP 255
-#define HEATER_1_MAXTEMP 255
-#define HEATER_2_MAXTEMP 255
+#define HEATER_0_MAXTEMP 295 //ATC Semitec 204GT-2 in e3d hotend is rated to 300 operating range.  don't know abs max range, so limiting a little for overshoot
+#define HEATER_1_MAXTEMP 225
+#define HEATER_2_MAXTEMP 225
 #define BED_MAXTEMP 130
 
 // If your bed has low resistance e.g. .6 ohm and throws the fuse you can duty cycle it to reduce the
@@ -150,16 +150,16 @@
   //#define PID_DEBUG // Sends debug data to the serial port.
   //#define PID_OPENLOOP 1 // Puts PID in open loop. M104/M140 sets the output power from 0 to PID_MAX
   //#define SLOW_PWM_HEATERS // PWM with very low frequency (roughly 0.125Hz=8s) and minimum state time of approximately 1s useful for heaters driven by a relay
-  #define PID_FUNCTIONAL_RANGE 200 // If the temperature difference between the target temperature and the actual temperature
+  #define PID_FUNCTIONAL_RANGE 100 // If the temperature difference between the target temperature and the actual temperature
                                   // is more then PID_FUNCTIONAL_RANGE then the PID will be shut off and the heater will be set to min/max.
-  #define PID_INTEGRAL_DRIVE_MAX 90  //limit for the integral term
+  #define PID_INTEGRAL_DRIVE_MAX 135  //limit for the integral term
   #define K1 0.95 //smoothing factor withing the PID
   #define PID_dT ((16.0 * 8.0)/(F_CPU / 64.0 / 256.0)) //sampling period of the temperature routine
 
-// medelmax - mark from pidautotune, heater cartridge @24v 29 17s
-    #define  DEFAULT_Kp 17.4
-    #define  DEFAULT_Ki 2.04
-    #define  DEFAULT_Kd 37
+// medelmax - mark from pidautotune, heater cartridge @24v in e3dv5
+    #define  DEFAULT_Kp 13.38
+    #define  DEFAULT_Ki .88
+    #define  DEFAULT_Kd 50.98
 #endif // PIDTEMP
 
 // Bed Temperature Control
@@ -327,7 +327,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 #define X_MIN_POS -125
 #define Y_MAX_POS 157.5
 #define Y_MIN_POS -182.5
-#define Z_MAX_POS 132
+#define Z_MAX_POS 113
 #define Z_MIN_POS 0
 
 #define X_MAX_LENGTH (X_MAX_POS - X_MIN_POS)
