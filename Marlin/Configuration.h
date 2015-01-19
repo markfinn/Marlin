@@ -152,7 +152,7 @@
   //#define SLOW_PWM_HEATERS // PWM with very low frequency (roughly 0.125Hz=8s) and minimum state time of approximately 1s useful for heaters driven by a relay
   #define PID_FUNCTIONAL_RANGE 30 // If the temperature difference between the target temperature and the actual temperature
                                   // is more then PID_FUNCTIONAL_RANGE then the PID will be shut off and the heater will be set to min/max.
-  #define PID_INTEGRAL_DRIVE_MAX 135  //limit for the integral term
+  #define PID_INTEGRAL_DRIVE_MAX 255  //limit for the integral term
   #define K1 0.95 //smoothing factor withing the PID
   #define PID_dT ((16.0 * 8.0)/(F_CPU / 64.0 / 256.0)) //sampling period of the temperature routine
 
@@ -189,13 +189,13 @@
     #define  DEFAULT_bedKi 3.84
     #define  DEFAULT_bedKd 600
 
-  #define PID_INTEGRAL_DRIVE_MAX_BED 230  //limit for the integral term
 
 //120v 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
 //from pidautotune
 //    #define  DEFAULT_bedKp 97.1
 //    #define  DEFAULT_bedKi 1.41
 //    #define  DEFAULT_bedKd 1675.16
+  #define PID_INTEGRAL_DRIVE_MAX_BED 255  //limit for the integral term
 
 // FIND YOUR OWN: "M303 E-1 C8 S90" to run autotune on the bed at 90 degreesC for 8 cycles.
 #endif // PIDTEMPBED
