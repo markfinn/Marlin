@@ -127,7 +127,7 @@
 // When temperature exceeds max temp, your heater will be switched off.
 // This feature exists to protect your hotend from overheating accidentally, but *NOT* from thermistor short/failure!
 // You should use MINTEMP for thermistor short/failure protection.
-#define HEATER_0_MAXTEMP 295 //ATC Semitec 204GT-2 in e3d hotend is rated to 300 operating range.  don't know abs max range, so limiting a little for overshoot
+#define HEATER_0_MAXTEMP 300 //ATC Semitec 204GT-2 in e3d hotend is rated to 300 operating range.
 #define HEATER_1_MAXTEMP 225
 #define HEATER_2_MAXTEMP 225
 #define BED_MAXTEMP 130
