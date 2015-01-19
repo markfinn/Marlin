@@ -183,18 +183,10 @@
 #define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
 
 #ifdef PIDTEMPBED
-//120v 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
-//from “Ultimate Gain” Zeigler–Nichols Ku=160, Tu=50s
-    #define  DEFAULT_bedKp 96
-    #define  DEFAULT_bedKi 3.84
-    #define  DEFAULT_bedKd 600
+    #define  DEFAULT_bedKp 102.5
+    #define  DEFAULT_bedKi 4.81
+    #define  DEFAULT_bedKd 545.78
 
-
-//120v 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
-//from pidautotune
-//    #define  DEFAULT_bedKp 97.1
-//    #define  DEFAULT_bedKi 1.41
-//    #define  DEFAULT_bedKd 1675.16
   #define PID_INTEGRAL_DRIVE_MAX_BED 255  //limit for the integral term
 
 // FIND YOUR OWN: "M303 E-1 C8 S90" to run autotune on the bed at 90 degreesC for 8 cycles.
